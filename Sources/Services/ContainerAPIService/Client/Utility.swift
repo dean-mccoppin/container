@@ -226,11 +226,20 @@ public struct Utility {
             config.dns = nil
         } else {
             let domain = management.dns.domain ?? DefaultsStore.getOptional(key: .defaultDNSDomain)
+            let nameservers = management.dns.nameservers.isEmpty
+                ? DefaultsStore.getOptional(key: .defaultDNSNameservers).map(splitCSV) ?? []
+                : management.dns.nameservers
+            let searchDomains = management.dns.searchDomains.isEmpty
+                ? DefaultsStore.getOptional(key: .defaultDNSSearchDomains).map(splitCSV) ?? []
+                : management.dns.searchDomains
+            let options = management.dns.options.isEmpty
+                ? DefaultsStore.getOptional(key: .defaultDNSOptions).map(splitCSV) ?? []
+                : management.dns.options
             config.dns = .init(
-                nameservers: management.dns.nameservers,
+                nameservers: nameservers,
                 domain: domain,
-                searchDomains: management.dns.searchDomains,
-                options: management.dns.options
+                searchDomains: searchDomains,
+                options: options
             )
         }
 
@@ -328,6 +337,10 @@ public struct Utility {
             throw ContainerizationError(.invalidState, message: "builtin network is not present")
         }
         return [AttachmentConfiguration(network: builtinNetworkId, options: AttachmentOptions(hostname: fqdn ?? containerId, macAddress: nil, mtu: 1280))]
+    }
+
+    static func splitCSV(_ s: String) -> [String] {
+        s.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
     }
 
     private static func getKernel(management: Flags.Management) async throws -> Kernel {

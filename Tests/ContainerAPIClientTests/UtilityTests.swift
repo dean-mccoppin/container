@@ -90,6 +90,38 @@ struct UtilityTests {
         }
     }
 
+    // MARK: - splitCSV Tests
+
+    @Test("Split basic comma-separated values")
+    func testSplitCSVBasic() {
+        let result = Utility.splitCSV("8.8.8.8,8.8.4.4")
+        #expect(result == ["8.8.8.8", "8.8.4.4"])
+    }
+
+    @Test("Split CSV trims whitespace around commas")
+    func testSplitCSVTrimsWhitespace() {
+        let result = Utility.splitCSV(" 8.8.8.8 , 8.8.4.4 ")
+        #expect(result == ["8.8.8.8", "8.8.4.4"])
+    }
+
+    @Test("Split CSV with single value")
+    func testSplitCSVSingleValue() {
+        let result = Utility.splitCSV("8.8.8.8")
+        #expect(result == ["8.8.8.8"])
+    }
+
+    @Test("Split empty CSV string returns empty array")
+    func testSplitCSVEmpty() {
+        let result = Utility.splitCSV("")
+        #expect(result.isEmpty)
+    }
+
+    @Test("Split CSV filters whitespace-only entries")
+    func testSplitCSVFiltersBlankEntries() {
+        let result = Utility.splitCSV("8.8.8.8,,8.8.4.4")
+        #expect(result == ["8.8.8.8", "8.8.4.4"])
+    }
+
     @Test
     func testPublishPortParser() throws {
         let ports = try Parser.publishPorts([

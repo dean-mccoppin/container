@@ -29,6 +29,9 @@ public enum DefaultsStore {
         case defaultContainerCPUs = "container.cpus"
         case defaultContainerMemory = "container.memory"
         case defaultDNSDomain = "dns.domain"
+        case defaultDNSNameservers = "dns.nameservers"
+        case defaultDNSOptions = "dns.options"
+        case defaultDNSSearchDomains = "dns.search"
         case defaultBuilderImage = "image.builder"
         case defaultInitImage = "image.init"
         case defaultKernelBinaryPath = "kernel.binaryPath"
@@ -84,6 +87,9 @@ public enum DefaultsStore {
             (.defaultSubnet, { Self.getOptional(key: $0) }),
             (.defaultIPv6Subnet, { Self.getOptional(key: $0) }),
             (.defaultDNSDomain, { Self.getOptional(key: $0) }),
+            (.defaultDNSNameservers, { Self.getOptional(key: $0) }),
+            (.defaultDNSOptions, { Self.getOptional(key: $0) }),
+            (.defaultDNSSearchDomains, { Self.getOptional(key: $0) }),
             (.defaultRegistryDomain, { Self.get(key: $0) }),
         ]
         return
@@ -140,6 +146,12 @@ extension DefaultsStore.Keys {
             return "If defined, the default amount of memory to allocate to a container."
         case .defaultDNSDomain:
             return "If defined, the local DNS domain to use for containers with unqualified names."
+        case .defaultDNSNameservers:
+            return "If defined, a comma-separated list of DNS nameserver IP addresses to use as defaults for containers."
+        case .defaultDNSOptions:
+            return "If defined, a comma-separated list of DNS options to use as defaults for containers."
+        case .defaultDNSSearchDomains:
+            return "If defined, a comma-separated list of DNS search domains to use as defaults for containers."
         case .defaultBuilderImage:
             return "The image reference for the utility container that `container build` uses."
         case .defaultInitImage:
@@ -170,6 +182,12 @@ extension DefaultsStore.Keys {
         case .defaultContainerMemory:
             return String.self
         case .defaultDNSDomain:
+            return String.self
+        case .defaultDNSNameservers:
+            return String.self
+        case .defaultDNSOptions:
+            return String.self
+        case .defaultDNSSearchDomains:
             return String.self
         case .defaultBuilderImage:
             return String.self
@@ -207,6 +225,15 @@ extension DefaultsStore.Keys {
             return "1g"
         case .defaultDNSDomain:
             return "test"
+        case .defaultDNSNameservers:
+            // This key is read with getOptional(), not get(); this value is never used
+            return ""
+        case .defaultDNSOptions:
+            // This key is read with getOptional(), not get(); this value is never used
+            return ""
+        case .defaultDNSSearchDomains:
+            // This key is read with getOptional(), not get(); this value is never used
+            return ""
         case .defaultBuilderImage:
             let tag = String(cString: get_container_builder_shim_version())
             return "ghcr.io/apple/container-builder-shim/builder:\(tag)"

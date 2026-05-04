@@ -66,6 +66,8 @@ extension Application {
                     throw ContainerizationError(.invalidArgument, message: "invalid domain name: \(value)")
                 }
                 DefaultsStore.set(value: value, key: key)
+            case .defaultDNSNameservers, .defaultDNSSearchDomains, .defaultDNSOptions:
+                DefaultsStore.set(value: value, key: key)
             case .defaultBuilderImage, .defaultInitImage:
                 guard (try? Reference.parse(value)) != nil else {
                     throw ContainerizationError(.invalidArgument, message: "invalid image reference: \(value)")
